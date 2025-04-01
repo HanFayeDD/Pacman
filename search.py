@@ -16,7 +16,7 @@
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
-
+from queue import Queue
 import util
 
 class SearchProblem:
@@ -95,15 +95,18 @@ def depthFirstSearch(problem: SearchProblem):
     visited_set = set()
     while stack:
         now_state, now_route = stack.pop()
-        visited_set.add(now_state)
         if problem.isGoalState(now_state):
             print("到达终点")
             break
+        if now_state in visited_set:
+            continue
+        visited_set.add(now_state)
         ls_successors = problem.getSuccessors(now_state) 
+        ## 所有的节点都访问过，那就直接pop，不压入栈，也相当于搜索路线回退
         for next_state, action, _ in ls_successors:
             if next_state not in visited_set:
                 next_route = []
-                next_route.extend(now_route)
+                next_route.extend(now_route.copy())
                 next_route.append(action)
                 stack.append((next_state, next_route))
     return now_route            
@@ -114,7 +117,27 @@ def depthFirstSearch(problem: SearchProblem):
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    q = Queue()
+    if problem.isGoalState(problem.getStartState()):
+        return []
+    
+    q.put((problem.getStartState(), []))
+    visited_set = set()
+    while not q.empty():
+        now_state, now_route = q.get()
+        visited_set.add(now_state)
+        if problem.isGoalState(now_state):
+            print("到达终点")
+            break
+        ls_successors = problem.getSuccessors(now_state) 
+        for next_state, action, _ in ls_successors:
+            if next_state not in visited_set:
+                visited_set.add(next_state)   ##避免一个8字型的交叉节点被重复添加进队列中
+                next_route = []
+                next_route.extend(now_route.copy())
+                next_route.append(action)
+                q.put((next_state, next_route))
+    return now_route  
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
