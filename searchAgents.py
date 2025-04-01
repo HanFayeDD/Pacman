@@ -199,6 +199,7 @@ class PositionSearchProblem(search.SearchProblem):
         返回的是state之后可能的状态 ( nextState, action, cost) 三元组
         """
 
+        ## !!! successor逻辑并没用检查是否访问过，所以一定会有返回值不可能为0
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             x,y = state

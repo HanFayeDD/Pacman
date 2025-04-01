@@ -86,15 +86,32 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    print(problem._visitedlist)
-    util.raiseNotDefined()
-    state_stack = [problem.getStartState()]
-    movement_ls = []
-    while state_stack:
-        now_state = state_stack.pop()
-        next_movements = problem.getSuccessors(now_state)
+    ## 开始就是终点
+    if problem.isGoalState(problem.getStartState()):
+        return []
     
+    ## 开始不是终点
+    stack = [(problem.getStartState(), [])]
+    visited_set = set()
+    while stack:
+        now_state, now_route = stack.pop()
+        visited_set.add(now_state)
+        if problem.isGoalState(now_state):
+            print("到达终点")
+            break
+        ls_successors = problem.getSuccessors(now_state)
+        ## 应该不会有这种情况
+        if len(ls_successors)==0:
+            raise ValueError()        
+        for next_state, action, _ in ls_successors:
+            if next_state not in visited_set:
+                next_route = []
+                next_route.extend(now_route)
+                next_route.append(action)
+                stack.append((next_state, next_route))
+    return now_route            
+    
+        
     
 
 def breadthFirstSearch(problem: SearchProblem):
