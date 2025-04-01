@@ -99,10 +99,7 @@ def depthFirstSearch(problem: SearchProblem):
         if problem.isGoalState(now_state):
             print("到达终点")
             break
-        ls_successors = problem.getSuccessors(now_state)
-        ## 应该不会有这种情况
-        if len(ls_successors)==0:
-            raise ValueError()        
+        ls_successors = problem.getSuccessors(now_state) 
         for next_state, action, _ in ls_successors:
             if next_state not in visited_set:
                 next_route = []
