@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 from queue import Queue
 import util
+
 
 class SearchProblem:
     """
@@ -70,7 +71,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem: SearchProblem):
     """
@@ -86,11 +88,11 @@ def depthFirstSearch(problem: SearchProblem):
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    ## 开始就是终点
+    # 开始就是终点
     if problem.isGoalState(problem.getStartState()):
         return []
-    
-    ## 开始不是终点
+
+    # 开始不是终点
     stack = [(problem.getStartState(), [])]
     visited_set = set()
     while stack:
@@ -101,18 +103,16 @@ def depthFirstSearch(problem: SearchProblem):
         if now_state in visited_set:
             continue
         visited_set.add(now_state)
-        ls_successors = problem.getSuccessors(now_state) 
-        ## 所有的节点都访问过，那就直接pop，不压入栈，也相当于搜索路线回退
+        ls_successors = problem.getSuccessors(now_state)
+        # 所有的节点都访问过，那就直接pop，不压入栈，也相当于搜索路线回退
         for next_state, action, _ in ls_successors:
             if next_state not in visited_set:
                 next_route = []
                 next_route.extend(now_route.copy())
                 next_route.append(action)
                 stack.append((next_state, next_route))
-    return now_route            
-    
-        
-    
+    return now_route
+
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
@@ -120,7 +120,7 @@ def breadthFirstSearch(problem: SearchProblem):
     q = Queue()
     if problem.isGoalState(problem.getStartState()):
         return []
-    
+
     q.put((problem.getStartState(), []))
     visited_set = set()
     while not q.empty():
@@ -129,20 +129,51 @@ def breadthFirstSearch(problem: SearchProblem):
         if problem.isGoalState(now_state):
             print("到达终点")
             break
-        ls_successors = problem.getSuccessors(now_state) 
+        ls_successors = problem.getSuccessors(now_state)
         for next_state, action, _ in ls_successors:
             if next_state not in visited_set:
-                visited_set.add(next_state)   ##避免一个8字型的交叉节点被重复添加进队列中
+                visited_set.add(next_state)  # 避免一个8字型的交叉节点被重复添加进队列中
                 next_route = []
                 next_route.extend(now_route.copy())
                 next_route.append(action)
                 q.put((next_state, next_route))
-    return now_route  
+    return now_route
+
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import PriorityQueue
+
+    # 初始化优先队列，存储(状态, 路径, 总代价)元组
+    pq = PriorityQueue()
+    start_state = problem.getStartState()
+    pq.push((start_state, [], 0), 0)  # (state, actions, total_cost), priority
+
+    visited = set()  # 记录已访问的状态
+
+    while not pq.isEmpty():
+        current_state, actions, current_cost = pq.pop()
+
+        # 检查是否到达目标状态
+        if problem.isGoalState(current_state):
+            return actions
+
+        if current_state not in visited:
+            visited.add(current_state)
+
+            # 获取所有后继状态
+            for next_state, action, step_cost in problem.getSuccessors(current_state):
+                if next_state not in visited:
+                    # 计算新的总代价
+                    new_cost = current_cost + step_cost
+                    # 创建新的动作序列
+                    new_actions = actions + [action]
+                    # 按总代价作为优先级加入队列
+                    pq.push((next_state, new_actions, new_cost), new_cost)
+
+    return []  # 如果没有找到路径，返回空列表
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -150,6 +181,7 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
