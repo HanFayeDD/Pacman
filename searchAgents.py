@@ -302,14 +302,22 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # util.raiseNotDefined()
+        return (self.startingPosition, frozenset())
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # util.raiseNotDefined()
+        flag = True
+        position, visitedCorners = state
+        for corner in self.corners:
+            if corner not in visitedCorners:
+                flag = False
+                break
+        return flag
+            
 
     def getSuccessors(self, state: Any):
         """
@@ -321,20 +329,32 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
         successors = []
+        position, visited = state
+        x, y = position
+        
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-
-            "*** YOUR CODE HERE ***"
-
-        self._expanded += 1 # DO NOT CHANGE
+            # 计算新位置
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            
+            # 检查是否撞墙
+            if not self.walls[nextx][nexty]:
+                next_position = (nextx, nexty)
+                # 创建新的已访问角落集合的副本
+                next_visited = set(visited)
+                
+                # 检查新位置是否是未访问的角落
+                if next_position in self.corners:
+                    next_visited.add(next_position)
+                
+                # 添加后继状态
+                # !!!因为必须是hash的类型，所以使用frozenset
+                successors.append(((next_position, frozenset(next_visited)), action, 1))
+        
+        self._expanded += 1
         return successors
+    
 
     def getCostOfActions(self, actions):
         """
