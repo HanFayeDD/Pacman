@@ -496,8 +496,27 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    foodList = foodGrid.asList()
+    
+    if not foodList:  # 如果没有食物了，返回0
+        return 0
+    
+    # 计算到最近食物的曼哈顿距离
+    min_distance = min([util.manhattanDistance(position, food) for food in foodList])
+    
+    # 计算食物之间的最大距离（MST启发式）
+    if len(foodList) > 1:
+        # 计算所有食物点之间的两两距离
+        distances = []
+        for i in range(len(foodList)):
+            for j in range(i+1, len(foodList)):
+                distances.append(util.manhattanDistance(foodList[i], foodList[j]))
+        max_distance = max(distances)
+    else:
+        max_distance = 0
+    
+    # 启发式值为到最近食物的距离加上食物之间的最大距离
+    return min_distance + max_distance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
