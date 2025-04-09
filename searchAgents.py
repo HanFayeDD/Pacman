@@ -547,7 +547,10 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # 深度优先搜索(DFS)：不能保证找到最短路径
+        # 代价一致搜索(UCS)：和BFS效果相同但实现更复杂，因为我们的移动代价都是1
+        # A*：虽然能找到最优解，但需要设计启发函数，对于这种简单的最近豆子问题显得过于复杂
+        return search.bfs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -583,7 +586,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.food[x][y]
 
 def mazeDistance(point1: Tuple[int, int], point2: Tuple[int, int], gameState: pacman.GameState) -> int:
     """
