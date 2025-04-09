@@ -14,3 +14,7 @@
 ## Q6
 A*可以使用到所有未被访问节点之间的最大/最小曼哈顿距离两种
 ![alt text](assets/image-5.png)
+## Q7 
+![alt text](assets/image-7.png)
+## Q8
+![alt text](assets/image-6.png)
