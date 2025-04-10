@@ -296,6 +296,7 @@ class CornersProblem(search.SearchProblem):
                 print('Warning: no food in corner ' + str(corner))
         self._expanded = 0 # DO NOT CHANGE; Number of search nodes expanded
 
+    # Q5
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
@@ -370,6 +371,7 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
+# Q6
 def cornersHeuristic(state: Any, problem: CornersProblem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -467,6 +469,8 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchFunction = lambda prob: search.aStarSearch(prob, foodHeuristic)
         self.searchType = FoodSearchProblem
 
+
+# Q7
 def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     Your heuristic for the FoodSearchProblem goes here.
@@ -534,7 +538,7 @@ class ClosestDotSearchAgent(SearchAgent):
                 currentState = currentState.generateSuccessor(0, action)
         self.actionIndex = 0
         print('Path found with cost %d.' % len(self.actions))
-
+# Q8
     def findPathToClosestDot(self, gameState: pacman.GameState):
         """
         Returns a path (a list of actions) to the closest dot, starting from
@@ -577,7 +581,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         self.startState = gameState.getPacmanPosition()
         self.costFn = lambda x: 1
         self._visited, self._visitedlist, self._expanded = {}, [], 0 # DO NOT CHANGE
-
+# Q8
     def isGoalState(self, state: Tuple[int, int]):
         """
         The state is Pacman's position. Fill this in with a goal test that will
